@@ -54,7 +54,6 @@ INSTALLED_APPS = [
 
     # Custom apps
     'users',
-    # 'users.apps.UsersConfig'
 ]
 
 REST_FRAMEWORK = {

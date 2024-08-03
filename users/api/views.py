@@ -1,20 +1,6 @@
-# from rest_framework.response import Response
-# from rest_framework.decorators import api_view
-
-# @api_view(['GET'])
-# def getRoutes(request):
-#     routes = [
-#         '/api/users/token',
-#         '/api/users/token/refresh',
-#     ]
-
-#     return Response(routes)
-
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer, LoginSerializer, MyTokenObtainPairSerializer
 
 class RegisterView(APIView):
