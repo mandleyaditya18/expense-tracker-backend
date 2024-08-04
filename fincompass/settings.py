@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     # Custom apps
     'users',
+    'expenses',
 ]
 
 REST_FRAMEWORK = {
