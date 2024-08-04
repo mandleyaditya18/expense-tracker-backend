@@ -17,11 +17,6 @@ class ExpenseCategory(BaseModel):
 
     def __str__(self):
         return self.name
-    
-    class Meta:
-        db_name = "expense_category"
-        verbose_name = "expense_category"
-        verbose_name_plural = "expense_categories"
 
 
 class Expense(BaseModel):
