@@ -22,7 +22,7 @@ class ExpenseCategory(BaseModel):
 class Expense(BaseModel):
     user = models.ForeignKey(User, related_name="expenses", on_delete=models.CASCADE)
     title = models.CharField(max_length=255, null=False, blank=False)
-    description = models.TextField()
+    description = models.TextField(blank=True, default="")
     date = models.DateField(default=date.today, blank=False, null=False)
     amount = models.DecimalField(decimal_places=2, max_digits=10)
     category = models.ManyToManyField(ExpenseCategory, related_name="expenses")
