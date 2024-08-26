@@ -7,8 +7,15 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+
+            token_serializer = MyTokenObtainPairSerializer()
+            refresh = token_serializer.get_token(user)
+            access_token = refresh.access_token
+            return Response({
+                "refresh": str(refresh), 
+                "access": str(access_token)
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
