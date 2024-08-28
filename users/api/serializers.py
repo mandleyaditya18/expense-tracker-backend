@@ -25,6 +25,9 @@ class RegisterSerializer(ModelSerializer):
     def validate(self, data):
         if data['password'] != data['password2']:
             raise ValidationError({'password': 'Passwords must match'})
+        
+        if User.objects.filter(email=data['email']).exists():
+            raise ValidationError({'email': 'Email address must be unique'})
         return data
 
     def create(self, validated_data):
