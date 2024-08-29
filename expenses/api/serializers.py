@@ -10,6 +10,7 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     category = ExpenseCategorySerializer(many=True)
+    amount = serializers.SerializerMethodField()
 
     class Meta:
         model = Expense
@@ -24,6 +25,9 @@ class ExpenseSerializer(serializers.ModelSerializer):
             "frequency"
         ]
         read_only_fields = ["user"]
+
+    def get_amount(self, instance):
+        return float(instance.amount)
 
     def create(self, validated_data):
         categories_data = validated_data.pop("category", [])
