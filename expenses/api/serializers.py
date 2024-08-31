@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from expenses.models import Expense, ExpenseCategory
+from common.constants import EXPENSE_FREQUENCY_CHOICES
 
 class ExpenseCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +13,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     category = ExpenseCategorySerializer(many=True)
     amount = serializers.SerializerMethodField()
     parsed_amount = serializers.SerializerMethodField()
+    parsed_frequency = serializers.SerializerMethodField()
 
     class Meta:
         model = Expense
@@ -24,7 +26,8 @@ class ExpenseSerializer(serializers.ModelSerializer):
             "amount", 
             "parsed_amount",
             "category", 
-            "frequency"
+            "frequency",
+            "parsed_frequency"
         ]
         read_only_fields = ["user"]
 
@@ -38,6 +41,10 @@ class ExpenseSerializer(serializers.ModelSerializer):
             return "$" + str(instance.amount)
         
         return instance.amount
+    
+    def get_parsed_frequency(self, instance):
+        mapping = {key: value for key, value in EXPENSE_FREQUENCY_CHOICES}
+        return mapping.get(instance.frequency) 
 
     def create(self, validated_data):
         categories_data = validated_data.pop("category", [])
