@@ -9,7 +9,7 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.expenses.all()
+        return self.request.user.expenses.all().order_by("-created_at")
     
     def get_serializer_context(self):
         return {'request': self.request}
