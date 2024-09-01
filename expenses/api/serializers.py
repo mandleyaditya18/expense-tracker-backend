@@ -11,8 +11,8 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     category = ExpenseCategorySerializer(many=True)
-    amount = serializers.SerializerMethodField()
     parsed_amount = serializers.SerializerMethodField()
+    parsed_amount_str = serializers.SerializerMethodField()
     parsed_frequency = serializers.SerializerMethodField()
 
     class Meta:
@@ -25,16 +25,17 @@ class ExpenseSerializer(serializers.ModelSerializer):
             "date", 
             "amount", 
             "parsed_amount",
+            "parsed_amount_str",
             "category", 
             "frequency",
             "parsed_frequency"
         ]
-        read_only_fields = ["user"]
+        read_only_fields = ["user", "parsed_amount", "parsed_amount_str", "parsed_frequency"]
 
-    def get_amount(self, instance):
+    def get_parsed_amount(self, instance):
         return float(instance.amount)
     
-    def get_parsed_amount(self, instance):
+    def get_parsed_amount_str(self, instance):
         if (instance.user.currency == "INR"):
             return "₹" + str(instance.amount)
         elif (instance.user.currency == "USD"):
