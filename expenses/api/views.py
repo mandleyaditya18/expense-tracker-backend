@@ -21,3 +21,6 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+    
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)

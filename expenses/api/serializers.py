@@ -62,3 +62,26 @@ class ExpenseSerializer(serializers.ModelSerializer):
             
             expense.category.set(categories_list)
         return expense
+    
+    def update(self, instance, validated_data):
+        categories_data = validated_data.pop("category", [])
+        user = self.context.get("request").user
+
+        with transaction.atomic():
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
+
+            current_categories = set(instance.category.values_list('name', flat=True))
+            new_category_names = set(cat['name'] for cat in categories_data)
+
+            categories_to_create = new_category_names - current_categories
+            categories_to_delete = current_categories - new_category_names
+
+            for cat_name in categories_to_create:
+                category, _ = ExpenseCategory.objects.get_or_create(user=user, name=cat_name)
+                instance.category.add(category)
+
+            instance.category.filter(name__in=categories_to_delete).delete()
+
+        return instance
