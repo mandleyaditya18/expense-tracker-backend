@@ -10,3 +10,15 @@ EXPENSE_FREQUENCY_CHOICES = [
     ("monthly", "Monthly"),
     ("annual", "Annual"),
 ]
+
+DEFAULT_EXPENSE_CATEGORIES = [
+    "home",
+    "bills",
+    "food",
+    "transport",
+    "grocery",
+    "investment",
+    "utilities",
+    "entertainment",
+    "medicine"
+]

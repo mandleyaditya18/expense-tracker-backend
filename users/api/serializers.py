@@ -1,3 +1,5 @@
+from common.constants import DEFAULT_EXPENSE_CATEGORIES
+from expenses.models import ExpenseCategory
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import (CharField, Serializer, ModelSerializer, ValidationError)
 from django.contrib.auth import authenticate
@@ -37,6 +39,12 @@ class RegisterSerializer(ModelSerializer):
             name=validated_data['name'],
             password=validated_data['password']
         )
+
+        if user:
+            for category in DEFAULT_EXPENSE_CATEGORIES:
+                expense_categories = []
+                expense_categories.append(ExpenseCategory(user=user, name=category))
+                ExpenseCategory.objects.bulk_create(expense_categories)
         return user
 
 class LoginSerializer(Serializer):
