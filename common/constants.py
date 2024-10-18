@@ -12,7 +12,7 @@ EXPENSE_FREQUENCY_CHOICES = [
 ]
 
 DEFAULT_EXPENSE_CATEGORIES = [
-    "home",
+    "family_assistance",
     "bills",
     "food",
     "transport",
@@ -20,5 +20,7 @@ DEFAULT_EXPENSE_CATEGORIES = [
     "investment",
     "utilities",
     "entertainment",
-    "medicine"
+    "healthcare",
+    "subscriptions",
+    "shopping"
 ]
