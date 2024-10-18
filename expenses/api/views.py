@@ -2,6 +2,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import get_object_or_404
 
 from .serializers import ExpenseSerializer, ExpenseCategorySerializer
@@ -10,6 +11,7 @@ from expenses.models import Expense
 class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         return self.request.user.expenses.filter(is_deleted=False).order_by("-created_at")
@@ -19,6 +21,11 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
