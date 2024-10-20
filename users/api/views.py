@@ -52,7 +52,6 @@ class DashboardViewSet(viewsets.ViewSet):
 
         try:
             date = datetime.strptime(month, "%m-%y")
-            print({date})
             total_expense = Expense.objects.filter(
                 user=request.user,
                 date__year=date.year,
@@ -70,3 +69,42 @@ class DashboardViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+    @action(detail=False, methods=['get'])
+    def expenses_by_category(self, request):
+        month = request.query_params.get("month")
+
+        if not month:
+            return Response(
+                {"error": "Month params is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            date = datetime.strptime(month, "%m-%y")
+            expenses_by_category = Expense.objects.filter(
+                user = request.user,
+                date__year = date.year,
+                date__month = date.month,
+                is_deleted = False,
+            ).values("category__name").annotate(
+                total_amount=Sum("amount")
+            ).order_by("-total_amount")
+
+            result = [
+                {
+                    "category": item["category__name"] or "uncategorized",
+                    "total_amount": float(item["total_amount"])
+                }
+                for item in expenses_by_category
+            ]
+
+            return Response({
+                "month": month,
+                "expenses_by_category": result
+            })
+
+        except:
+            return Response(
+                {"error": "Invalid month format. Use MM-YY."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
